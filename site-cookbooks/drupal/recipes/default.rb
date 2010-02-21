@@ -20,6 +20,7 @@
 include_recipe "apache2"
 include_recipe "apache2::mod_rewrite"
 include_recipe "php5"
+include_recipe "php::module_mysql"
 # shouldn't assume ec2 in general, but I can for now
 include_recipe "mysql::server_ec2"
 
