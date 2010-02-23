@@ -23,6 +23,6 @@ http_request "set DNSMadeEasy IP" do
   # we'll assume ec2, cuz we can
   ip = node[:ec2][:local_ipv4]
   dnsme = JSON::parse(open(node[:dnsmadeeasy][:cred_url]).read)[:dnsmadeeasy]
-  ddns_id = JSON::parse(open(node[:ec2][:userdata]))[:dnsmadeeasy][:ddnsid]
+  ddns_id = node[:dnsmadeeasy][:ddnsid]
   message :username => dnsme[:username], :password => dnsme[:password], :id => ddns_id, :ip => ip
 end
