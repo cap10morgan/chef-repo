@@ -1,0 +1,1 @@
+set_unless[:dnsmadeeasy][:cred_url] = 'https://tsd-cred.s3.amazonaws.com/dnsmadeeasy.json'
