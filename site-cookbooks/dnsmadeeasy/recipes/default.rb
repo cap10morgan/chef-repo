@@ -17,10 +17,11 @@
 # limitations under the License.
 #
 
-http_request "set DNSMadeEasy IP" do
-  action :get
-  url "http://www.dnsmadeeasy.com/servlet/updateip"
-  message :username => node[:dnsmadeeasy][:username],
-    :password => node[:dnsmadeeasy][:password],
-    :id => node[:dnsmadeeasy][:ddnsid], :ip => node[:ipaddress]
+execute "set DNSMadeEasy IP" do
+  dnsme_url = "http://www.dnsmadeeasy.com/servlet/updateip"
+  dnsme_url << "?username=#{node[:dnsmadeeasy][:username]}"
+  dnsme_url << "&password=#{node[:dnsmadeeasy][:password]}"
+  dnsme_url << "&id=#{node[:dnsmadeeasy][:ddnsid]}"
+  dnsme_url << "&ip=#{node[:ipaddress]}"
+  command "curl '#{dnsme_url}'"
 end
