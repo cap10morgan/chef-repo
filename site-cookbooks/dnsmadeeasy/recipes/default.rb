@@ -20,9 +20,7 @@
 http_request "set DNSMadeEasy IP" do
   action :get
   url "http://www.dnsmadeeasy.com/servlet/updateip"
-  # we'll assume ec2, cuz we can
-  ip = node[:ec2][:local_ipv4]
-  dnsme = JSON::parse(open(node[:dnsmadeeasy][:cred_url]).read)[:dnsmadeeasy]
-  ddns_id = node[:dnsmadeeasy][:ddnsid]
-  message :username => dnsme[:username], :password => dnsme[:password], :id => ddns_id, :ip => ip
+  message :username => node[:dnsmadeeasy][:username],
+    :password => node[:dnsmadeeasy][:password],
+    :id => node[:dnsmadeeasy][:ddnsid], :ip => node[:ipaddress]
 end
