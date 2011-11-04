@@ -1,4 +1,4 @@
 # Created by Chef
-<% sudo_groups.each do |g| %>
+<% @sudo_groups.each do |g| %>
 %<%= g[:name] %> <%= g[:sudo_perms] %>
 <% end %>
