@@ -71,5 +71,5 @@ end
 template "/etc/sudoers.d/sysadmin_group" do
   source "sudoers.erb"
   mode "0440"
-  variables :sudo_groups => { :name => 'sysadmin', :sudo_perms => 'ALL=(ALL:ALL) ALL' }
+  variables :sudo_groups => [{:name => 'sysadmin', :sudo_perms => 'ALL=(ALL:ALL) ALL'}]
 end
