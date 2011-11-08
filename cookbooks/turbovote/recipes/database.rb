@@ -1,4 +1,4 @@
-mysql_creds = encrypted_data_bag_item("passwords", "mysql")
+mysql_creds = Chef::EncryptedDataBagItem.load("passwords", "mysql")
 
 execute "create-database" do
   password_option = "#{node['mysql']['server_root_password'].empty? ? '' : '-p' }#{node['mysql']['server_root_password']}"
