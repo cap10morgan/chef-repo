@@ -1,11 +1,13 @@
 home_dir = node['turbovote']['app_root']
 
+# create the user the app will run as
 user node['turbovote']['user'] do
   action :create
   home home_dir
   system true
 end
 
+# create some directories the app requires
 directory "#{node['turbovote']['app_root']}/releases" do
   action :create
   owner node['turbovote']['user']
@@ -30,6 +32,7 @@ directory "#{node['turbovote']['app_root']}/shared/pids" do
   recursive true
 end
 
+# setup the SSH keys so sysadmins can deploy the app
 directory "#{home_dir}/.ssh" do
   action :create
   owner node['turbovote']['user']
@@ -45,6 +48,7 @@ search(:users, 'groups:sysadmin') do |u|
   end
 end
 
+# install the app's dependencies
 gem_package "bundler" do
   action :install
 end
@@ -55,4 +59,25 @@ end
 
 package "libxslt-dev" do
   action :install
+end
+
+# create the apache config
+apache_site "default" do
+  action :disable
+end
+
+apache_site "default-ssl" do
+  action :disable
+end
+
+template "/etc/apache2/sites-available/turbovote" do
+  source "apache_conf.erb"
+  owner "root"
+  owner "root"
+  mode "0644"
+  variables :doc_root => "#{node['turbovote']['app_root']}/current/public"
+end
+
+apache_site "turbovote" do
+  action :enable
 end

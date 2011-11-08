@@ -1,0 +1,67 @@
+# Created by Chef
+
+<VirtualHost *:80>
+  ServerName turbovote.com
+  ServerAlias www.turbovote.com
+
+  DocumentRoot <%= @doc_root %>
+
+  RailsEnv production
+
+  <Directory />
+    Options FollowSymLinks
+    AllowOverride None
+  </Directory>
+
+  <Directory <%= @doc_root %>>
+    Options FollowSymLinks
+    AllowOverride AuthConfig FileInfo Indexes Limit Options=All,MultiViews
+    Order deny,allow
+    allow from all
+  </Directory>
+
+  ErrorLog /var/log/apache2/error.log
+  LogLevel warn
+
+  CustomLog /var/log/apache2/access.log combined
+
+</VirtualHost>
+
+<VirtualHost _default_:443>
+  ServerName turbovote.com
+  ServerAlias www.turbovote.com
+
+  DocumentRoot <%= @doc_root %>
+
+  RailsEnv production
+
+  <Directory />
+    Options FollowSymLinks
+    AllowOverride None
+  </Directory>
+
+  <Directory <%= @doc_root %>>
+    Options FollowSymLinks
+    AllowOverride AuthConfig FileInfo Indexes Limit Options=All,MultiViews
+    Order deny,allow
+    allow from all
+  </Directory>
+
+  ErrorLog /var/log/apache2/error.log
+  LogLevel warn
+
+  CustomLog /var/log/apache2/access.log combined
+
+  SSLEngine on
+
+  SSLCertificateFile /etc/ssl/certs/turbovote.org.crt
+  SSLCertificateKeyFile /etc/ssl/private/turbovote.org.key
+  SSLCertificateChainFile /etc/ssl/certs/turbovote.org.chain.crt
+
+  BrowserMatch "MSIE [2-6]" \
+    nokeepalive ssl-unclean-shutdown \
+    downgrade-1.0 force-response-1.0
+  # MSIE 7 and newer should be able to use keepalive
+  BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+
+</VirtualHost>
