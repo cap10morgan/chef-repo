@@ -14,6 +14,22 @@ directory "#{node['turbovote']['app_root']}/releases" do
   recursive true
 end
 
+directory "#{node['turbovote']['app_root']}/shared/log}" do
+  action :create
+  owner node['turbovote']['user']
+  group node['turbovote']['user']
+  mode 0755
+  recursive true
+end
+
+directory "#{node['turbovote']['app_root']}/shared/pids}" do
+  action :create
+  owner node['turbovote']['user']
+  group node['turbovote']['user']
+  mode 0755
+  recursive true
+end
+
 directory "#{home_dir}/.ssh" do
   action :create
   owner node['turbovote']['user']
