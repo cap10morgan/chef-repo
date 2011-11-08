@@ -28,3 +28,7 @@ search(:users, 'groups:sysadmin') do |u|
     not_if "grep -q '#{u['ssh_keys']}' #{home_dir}/.ssh/authorized_keys"
   end
 end
+
+gem_package "bundler" do
+  action :install
+end
