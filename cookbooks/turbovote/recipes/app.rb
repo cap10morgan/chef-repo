@@ -6,7 +6,7 @@ user node['turbovote']['user'] do
   system true
 end
 
-directory node['turbovote']['app_root'] do
+directory "#{node['turbovote']['app_root']}/releases" do
   action :create
   owner node['turbovote']['user']
   group node['turbovote']['user']
