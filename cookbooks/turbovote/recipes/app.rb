@@ -25,6 +25,6 @@ search(:users, 'groups:sysadmin') do |u|
   user_ssh_dir = "/home/#{u['id']}/.ssh"
   execute "copy SSH keys to app user" do
     command "cat #{user_ssh_dir}/authorized_keys >> #{home_dir}/.ssh/authorized_keys"
-    not_if "grep -q `cat #{user_ssh_dir}/authorized_keys` #{home_dir}/.ssh/authorized_keys"
+    not_if "grep -q '`cat #{user_ssh_dir}/authorized_keys`' #{home_dir}/.ssh/authorized_keys"
   end
 end
