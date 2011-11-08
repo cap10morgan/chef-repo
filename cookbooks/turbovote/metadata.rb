@@ -4,8 +4,9 @@ license          "Apache 2.0"
 description      "Sets up environment for turbovote Rails app"
 version          "0.0.1"
 
+recipe "turbovote", "Sets up app and database for turbovote Rails app"
 recipe "turbovote::app", "Sets up user and filesystem for turbovote Rails app"
-recipe "turbovote::database", "Sets up MySQL database and privileges for turbvote Rails app"
+recipe "turbovote::database", "Sets up MySQL database and privileges for turbovote Rails app"
 
 depends "mysql"
 
