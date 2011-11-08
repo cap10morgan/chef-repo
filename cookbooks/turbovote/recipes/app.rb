@@ -32,3 +32,11 @@ end
 gem_package "bundler" do
   action :install
 end
+
+package "libxml2-dev" do
+  action :install
+end
+
+package "libxslt-dev" do
+  action :install
+end
