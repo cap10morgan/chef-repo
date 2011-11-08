@@ -73,3 +73,7 @@ template "/etc/sudoers.d/sysadmin_group" do
   mode "0440"
   variables :sudo_groups => [{:name => 'sysadmin', :sudo_perms => 'ALL=(ALL:ALL) ALL'}]
 end
+
+gem_package "bundler" do
+  action :install
+end
