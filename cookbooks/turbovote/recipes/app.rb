@@ -14,7 +14,7 @@ directory "#{node['turbovote']['app_root']}/releases" do
   recursive true
 end
 
-directory "#{node['turbovote']['app_root']}/shared/log}" do
+directory "#{node['turbovote']['app_root']}/shared/log" do
   action :create
   owner node['turbovote']['user']
   group node['turbovote']['user']
@@ -22,7 +22,7 @@ directory "#{node['turbovote']['app_root']}/shared/log}" do
   recursive true
 end
 
-directory "#{node['turbovote']['app_root']}/shared/pids}" do
+directory "#{node['turbovote']['app_root']}/shared/pids" do
   action :create
   owner node['turbovote']['user']
   group node['turbovote']['user']
