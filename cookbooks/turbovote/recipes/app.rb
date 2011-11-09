@@ -63,11 +63,11 @@ end
 
 # create the apache config
 apache_site "default" do
-  action :disable
+  enable false
 end
 
 apache_site "default-ssl" do
-  action :disable
+  enable false
 end
 
 template "/etc/apache2/sites-available/turbovote" do
@@ -78,6 +78,4 @@ template "/etc/apache2/sites-available/turbovote" do
   variables :doc_root => "#{node['turbovote']['app_root']}/current/public"
 end
 
-apache_site "turbovote" do
-  action :enable
-end
+apache_site "turbovote"
