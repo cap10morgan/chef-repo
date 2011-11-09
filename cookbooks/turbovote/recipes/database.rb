@@ -29,3 +29,7 @@ execute "mysql-set-privileges" do
   command "/usr/bin/mysqladmin -u root #{password_option} flush-privileges"
   action :nothing
 end
+
+link "/tmp/mysql.sock" do
+  to "/var/run/mysqld/mysqld.sock"
+end
