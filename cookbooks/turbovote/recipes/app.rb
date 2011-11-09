@@ -78,4 +78,6 @@ template "/etc/apache2/sites-available/turbovote" do
   variables :doc_root => "#{node['turbovote']['app_root']}/current/public"
 end
 
+apache_module "ssl"
+
 apache_site "turbovote"
