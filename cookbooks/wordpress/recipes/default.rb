@@ -25,6 +25,8 @@ include_recipe "apache2::mod_php5"
 
 if node.has_key?("ec2")
   server_fqdn = node['ec2']['public_hostname']
+elsif node['wordpress'].has_key?('hostname')
+  server_fqdn = node['wordpress']['hostname']
 else
   server_fqdn = node['fqdn']
 end
