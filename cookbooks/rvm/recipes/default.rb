@@ -17,7 +17,7 @@ end
 bash "installing system-wide RVM stable" do
   user "root"
   code "bash -s stable < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer )"
-  not_if "which rvm"
+  not_if %q{ [[ `type rvm | head -n 1` == "rvm is a function" ]] }
 end
 
 bash "upgrading to RVM head" do
