@@ -8,22 +8,31 @@ ruby_version = [].tap do |v|
   v << node[:rvm][:ruby][:patch_level] if node[:rvm][:ruby][:patch_level]
 end * '-'
 
+def load_rvm
+<<EOH
+rvm_test=`type rvm | head -n 1`
+if [ "$rvm_test" != "rvm is a function" ]; then
+  . /usr/local/rvm/scripts/rvm
+fi
+EOH
+end
+
 if ruby_version.size > 0
 
   include_recipe "rvm"
 
   bash "installing #{ruby_version}" do
     user "root"
-    code "rvm install #{ruby_version}"
+    code "#{load_rvm} rvm install #{ruby_version}"
     not_if "rvm list | grep #{ruby_version}"
   end
 
   bash "make #{ruby_version} the default ruby" do
     user "root"
-    code "rvm --default #{ruby_version}"
+    code "#{load_rvm} rvm --default #{ruby_version}"
     not_if "rvm list | grep '=> #{ruby_version}'"
-    only_if { node[:rvm][:ruby][:default] }
-    #notifies :restart, "service[chef-client]"
+    only_if { /^Regexp.escape(node[:rvm][:ruby][:default])/ =~ ruby_version }
+    # notifies :restart, "service[chef-client]"
   end
 
   gem_package "chef" do
