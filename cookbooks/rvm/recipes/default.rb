@@ -9,14 +9,14 @@ include_recipe "apt" if [ 'debian', 'ubuntu' ].member? node[:platform]
 package "curl"
 package "git-core"
 include_recipe "build-essential"
- 
+
 %w(libreadline5-dev zlib1g-dev libssl-dev libxml2-dev libxslt1-dev).each do |pkg|
   package pkg
 end
- 
+
 bash "installing system-wide RVM stable" do
   user "root"
-  code "bash < <( curl -L http://bit.ly/rvm-install-system-wide )"
+  code "bash -s stable < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer )"
   not_if "which rvm"
 end
 
