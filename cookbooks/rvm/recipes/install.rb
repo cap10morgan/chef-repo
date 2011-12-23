@@ -8,14 +8,13 @@ ruby_version = [].tap do |v|
   v << node[:rvm][:ruby][:patch_level] if node[:rvm][:ruby][:patch_level]
 end * '-'
 
-def load_rvm
+load_rvm = \
 <<EOH
 rvm_test=`type rvm | head -n 1`
 if [ "$rvm_test" != "rvm is a function" ]; then
   . /usr/local/rvm/scripts/rvm
 fi
 EOH
-end
 
 if ruby_version.size > 0
 
