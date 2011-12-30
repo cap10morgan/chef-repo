@@ -8,6 +8,9 @@ ruby_version = [].tap do |v|
   v << node[:rvm][:ruby][:patch_level] if node[:rvm][:ruby][:patch_level]
 end * '-'
 
+rubies = search(:rvm_rubies, "*:*")
+rubies = [{ :id => ruby_version }] unless rubies.count > 0
+
 load_rvm = \
 <<EOH
 rvm_test=`type rvm | head -n 1`
@@ -16,32 +19,35 @@ if [ "$rvm_test" != "rvm is a function" ]; then
 fi
 EOH
 
-if ruby_version.size > 0
+include_recipe "rvm"
 
-  include_recipe "rvm"
+rubies.each do |ruby|
+  ruby_str = ruby['id']
+  ruby_array = []
+  ruby_array << ruby['implementation'] if ruby.has_key?('implementation')
+  ruby_array << ruby['version'] if ruby.has_key?('version')
+  ruby_array << ruby['patch_level'] if ruby.has_key?('patch_level')
+  ruby_str = ruby_array.join('-') if ruby_array.count > 0
 
-  bash "installing #{ruby_version}" do
+  bash "installing #{ruby_str}" do
     user "root"
-    code "#{load_rvm} rvm install #{ruby_version}"
-    not_if "rvm list | grep #{ruby_version}"
+    code "#{load_rvm} rvm install #{ruby_str}"
+    not_if "rvm list | grep #{ruby_str}"
   end
 
-  bash "make #{ruby_version} the default ruby" do
+  bash "make #{ruby_str} the default ruby" do
     user "root"
-    code "#{load_rvm} rvm --default #{ruby_version}"
-    not_if "rvm list | grep '=> #{ruby_version}'"
-    only_if { /^Regexp.escape(node[:rvm][:ruby][:default])/ =~ ruby_version }
+    code "#{load_rvm} rvm --default #{ruby_str}"
+    not_if "rvm list | grep '=> #{ruby_str}'"
+    only_if { /^#{Regexp.escape(node[:rvm][:ruby][:default])}/ =~ ruby_version ||
+              ruby['default'] }
     # notifies :restart, "service[chef-client]"
   end
 
   gem_package "chef" do
     gem_binary "#{load_rvm} gem"
-    only_if { /^#{Regexp.escape(node[:rvm][:ruby][:default])}/ =~ ruby_version }
+    only_if { /^#{Regexp.escape(node[:rvm][:ruby][:default])}/ =~ ruby_version ||
+              ruby['default'] }
     # re-install the chef gem into rvm to enable subsequent chef-client run
   end
-
-else
-
-  log "either use the rvm::ree/rvm::ruby_xxx recipes or provide attributes to specify which implementation and version to install."
-
 end
