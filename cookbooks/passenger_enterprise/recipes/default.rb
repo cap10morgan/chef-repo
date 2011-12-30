@@ -23,37 +23,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-def find_rvm_ree
-  rubies = node[:rvm][:rubies].dup
-  rubies << node[:rvm][:default_ruby]
-  rubies.uniq!
-  rubies.each do |rubie|
-    if /^ree-/i =~ rubie
-      return rubie
-    end
-  end
-  false
-end
-
-def has_rvm_ree?
-  node.has_key?(:rvm) && find_rvm_ree
-end
-
-def rvm_ree_install_path
-  current_ruby = `rvm current`.chomp
-  cmd = ""
-  cmd += "rvm use ree && " unless /^ree-/ =~ current_ruby
-  cmd += "echo $MY_RUBY_HOME"
-  `#{cmd}`.chomp
-end
-
-if has_rvm_ree?
-  # this will cause the ruby_enterprise recipe to not re-install REE
-  node[:ruby_enterprise][:install_path] = rvm_ree_install_path
-end
-
-include_recipe "ruby_enterprise"
-
-ree_gem "passenger" do
+rvm_gem "passenger" do
+  ruby_string "ree"
   version node[:passenger_enterprise][:version]
 end
