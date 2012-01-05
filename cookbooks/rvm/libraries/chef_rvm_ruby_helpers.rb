@@ -52,6 +52,20 @@ class Chef
       end
 
       ##
+      # Returns the full path including the ruby binary for the requested
+      # Ruby string, it if is installed. Returns nil if not installed.
+      #
+      # @param [String, #to_s] the RVM Ruby string
+      # @return [String] full path to ruby bin
+      def ruby_bin_path(rubie)
+        return nil unless ruby_installed?(rubie)
+        cmd = "rvm info #{rubie}"
+        rvm_info = `#{rvm_wrap_cmd(cmd)}`
+        /\s*ruby:\s*"([^"]+?\/bin\/ruby)"/ =~ rvm_info
+        $1
+      end
+
+      ##
       # Fetches the current default Ruby string, potentially with gemset
       #
       # @return [String] the RVM Ruby string, nil if none is set

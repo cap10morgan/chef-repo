@@ -24,20 +24,22 @@
 
 include_recipe "nginx::source"
 include_recipe "passenger_enterprise"
+include_recipe "rvm::system_install"
 
 configure_flags = node[:nginx][:configure_flags].join(" ")
 nginx_install = node[:nginx][:install_path]
 nginx_version = node[:nginx][:version]
 nginx_dir = node[:nginx][:dir]
 
-execute "passenger_nginx_module" do
-  command %Q{
-    #{node[:ruby_enterprise][:install_path]}/bin/passenger-install-nginx-module \
-      --auto --prefix=#{nginx_install} \
-      --nginx-source-dir=#{Chef::Config[:file_cache_path]}/nginx-#{nginx_version} \
-      --extra-configure-flags='#{configure_flags}'
+rvm_shell "install passenger nginx module" do
+  ruby_string "ree"
+  code %Q{
+    $GEM_HOME/bin/passenger-install-nginx-module \
+    --auto --prefix=#{nginx_install} \
+    --nginx-source-dir=#{Chef::Config[:file_cache_path]}/nginx-#{nginx_version} \
+    --extra-configure-flags='#{configure_flags}'
   }
-  not_if "#{nginx_install}/sbin/nginx -V 2>&1 | grep '#{node[:ruby_enterprise][:gems_dir]}/gems/passenger-#{node[:passenger_enterprise][:version]}/ext/nginx'"
+  not_if %Q{ #{nginx_install}/sbin/nginx -V 2>&1 | grep "$GEM_HOME/gems/passenger-#{node[:passenger_enterprise][:version]}/ext/nginx" }
   notifies :restart, resources(:service => "nginx")
 end
 
@@ -46,5 +48,8 @@ template "#{nginx_dir}/conf.d/passenger.conf" do
   owner "root"
   group "root"
   mode "0644"
+  variables({
+    :ruby_bin => begin node['rvm']['ruby_paths']['ree-1.8.7']['bin'] rescue `which ruby`.chomp end
+  })
   notifies :restart, resources(:service => "nginx")
 end

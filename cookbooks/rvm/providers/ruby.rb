@@ -21,6 +21,7 @@
 
 include Chef::RVM::StringHelpers
 include Chef::RVM::RubyHelpers
+include Chef::RVM::ShellHelpers
 
 def load_current_resource
   @rubie        = normalize_ruby_string(select_ruby(new_resource.ruby_string))
@@ -60,6 +61,9 @@ action :install do
     Chef::Log.debug("rvm_ruby[#{@rubie}] build time was " +
       "#{(Time.now - install_start)/60.0} minutes.")
   end
+
+  ruby_path_attr = {'bin' => ruby_bin_path(@rubie)}
+  node['rvm']['ruby_paths'][@rubie] = ruby_path_attr
 end
 
 action :uninstall do

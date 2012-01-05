@@ -27,6 +27,8 @@ default['rvm']['user_default_ruby'] = "ruby-1.9.2-p290"
 default['rvm']['rubies']      = []
 default['rvm']['user_rubies'] = []
 
+default['rvm']['ruby_paths'] = Hash.new
+
 # list of gems to be installed in global gemset of all rubies
 _global_gems_ = [
   { 'name'    => 'bundler' },
