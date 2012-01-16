@@ -1,0 +1,29 @@
+# Created by Chef
+
+server {
+  listen         80 default_server;
+  server_name    turbovote.org www.turbovote.org;
+  rewrite        ^ https://$server_name$request_uri? permanent;
+}
+
+server {
+  listen         443 default_server;
+  server_name    turbovote.org www.turbovote.org;
+  root           <%= @doc_root %>
+
+  ssl                  on;
+  ssl_certificate      /etc/ssl/certs/turbovote.org.combined.crt;
+  ssl_certificate_key  /etc/ssl/private/turbovote.org.key;
+  keepalive_timeout    70;
+
+  location / {
+    try_files $uri $uri/ $uri.html @passenger;
+  }
+
+  location @passenger {
+    passenger_enabled on;
+    passenger_spawn_method smart;
+    passenger_set_cgi_param HTTP_X_FORWARDED_PROTO https;
+    rails_env production;
+  }
+}
