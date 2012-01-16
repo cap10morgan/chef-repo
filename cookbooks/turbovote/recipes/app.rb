@@ -70,14 +70,23 @@ apache_site "default-ssl" do
   enable false
 end
 
-template "/etc/apache2/sites-available/turbovote" do
+template "/etc/apache2/sites-available/turbovote.conf" do
   source "apache_conf.erb"
-  owner "root"
-  owner "root"
-  mode "0644"
+  owner  "root"
+  group  "root"
+  mode   "0644"
   variables :doc_root => "#{node['turbovote']['app_root']}/current/public"
+end
+
+template "/etc/nginx/sites-available/turbovote.conf" do
+  source "nginx_conf.erb"
+  owner  "root"
+  group  "root"
+  mode   "0644"
+  variables :doc_root => "#{node[:turbovote][:app_root]}/current/public"
 end
 
 apache_module "ssl"
 
-apache_site "turbovote"
+# apache_site "turbovote.conf"
+nginx_site "turbovote.conf";
