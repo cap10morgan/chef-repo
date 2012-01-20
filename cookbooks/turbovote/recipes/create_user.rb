@@ -37,15 +37,15 @@ file "#{node[:turbovote][:app_root]}/.ssh/id_dsa" do
   owner node[:turbovote][:user]
   group node[:turbovote][:user]
   mode "0600"
-  action :create_if_missing
   content ssh_keys['private'] + "\n"
+  action :create
 end
 file "#{node[:turbovote][:app_root]}/.ssh/id_dsa.pub" do
   owner node[:turbovote][:user]
   group node[:turbovote][:user]
   mode "0600"
-  action :create_if_missing
   content ssh_keys['public'] + "\n"
+  action :create
 end
 
 execute "set owner on authorized_keys" do
