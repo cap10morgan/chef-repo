@@ -1,50 +1,12 @@
-home_dir = node['turbovote']['app_root']
-
-# create the user the app will run as
-user node['turbovote']['user'] do
-  action :create
-  home home_dir
-  system true
-end
+include_recipe "turbovote::create_user"
 
 # create some directories the app requires
-directory "#{node['turbovote']['app_root']}/releases" do
-  action :create
-  owner node['turbovote']['user']
-  group node['turbovote']['user']
-  mode 0755
-  recursive true
-end
-
-directory "#{node['turbovote']['app_root']}/shared/log" do
-  action :create
-  owner node['turbovote']['user']
-  group node['turbovote']['user']
-  mode 0755
-  recursive true
-end
-
-directory "#{node['turbovote']['app_root']}/shared/pids" do
-  action :create
-  owner node['turbovote']['user']
-  group node['turbovote']['user']
-  mode 0755
-  recursive true
-end
-
-# setup the SSH keys so sysadmins can deploy the app
-directory "#{home_dir}/.ssh" do
-  action :create
-  owner node['turbovote']['user']
-  group node['turbovote']['user']
-  mode 0700
-end
-
-search(:users, 'groups:sysadmin') do |u|
-  user_ssh_dir = "/home/#{u['id']}/.ssh"
-  execute "copy SSH keys to app user" do
-    command "cat #{user_ssh_dir}/authorized_keys >> #{home_dir}/.ssh/authorized_keys"
-    not_if "grep -q '#{u['ssh_keys']}' #{home_dir}/.ssh/authorized_keys"
+%w[ releases shared shared/log shared/pids shared/system ].each do |dir|
+  directory "#{node[:turbovote][:app_root]}/#{dir}" do
+    action :create
+    owner node['turbovote']['user']
+    group node['turbovote']['user']
+    mode 0755
   end
 end
 
@@ -57,7 +19,7 @@ package "libxml2-dev" do
   action :install
 end
 
-package "libxslt-dev" do
+package "libxslt1-dev" do
   action :install
 end
 
@@ -78,15 +40,6 @@ template "/etc/apache2/sites-available/turbovote.conf" do
   variables :doc_root => "#{node['turbovote']['app_root']}/current/public"
 end
 
-template "/etc/nginx/sites-available/turbovote.conf" do
-  source "nginx_conf.erb"
-  owner  "root"
-  group  "root"
-  mode   "0644"
-  variables :doc_root => "#{node[:turbovote][:app_root]}/current/public"
-end
-
 apache_module "ssl"
 
-# apache_site "turbovote.conf"
-nginx_site "turbovote.conf";
+apache_site "turbovote.conf"
