@@ -9,7 +9,7 @@ server {
 server {
   listen         443 default_server;
   server_name    turbovote.org www.turbovote.org;
-  root           <%= @doc_root %>
+  root           <%= @doc_root %>;
 
   ssl                  on;
   ssl_certificate      /etc/ssl/certs/turbovote.org.combined.crt;
@@ -17,7 +17,7 @@ server {
   keepalive_timeout    70;
 
   location / {
-    try_files $uri $uri/ $uri.html @passenger;
+    try_files $uri $uri.html @passenger;
   }
 
   location @passenger {
