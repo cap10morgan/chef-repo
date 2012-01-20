@@ -99,7 +99,7 @@ unless Chef::Config[:solo]
   end
 end
 
-# set the root password on platforms 
+# set the root password on platforms
 # that don't support pre-seeding
 unless platform?(%w{debian ubuntu})
 
@@ -130,4 +130,15 @@ execute "mysql-install-privileges" do
   command "/usr/bin/mysql -u root #{node['mysql']['server_root_password'].empty? ? '' : '-p' }#{node['mysql']['server_root_password']} < #{grants_path}"
   action :nothing
   subscribes :run, resources("template[#{grants_path}]"), :immediately
+end
+
+search(:users, 'groups:sysadmin') do |u|
+  template "/home/#{u[:id]}/.my.cnf" do
+    source "user_my_cnf.erb"
+    owner u[:id]
+    group u[:id]
+    mode "0600"
+    variables :user   => "root",
+              :passwd => node['mysql']['server_root_password']
+  end
 end
