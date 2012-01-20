@@ -25,6 +25,16 @@
 include_recipe "apache2"
 include_recipe "build-essential"
 
+passenger_cc = value_for_platform(
+  ["ubuntu"] => {
+    "11.10"   => "gcc-4.4",
+    "default" => "gcc"
+  },
+  "default" => "gcc"
+)
+
+package passenger_cc
+
 if platform?("centos","redhat")
   package "httpd-devel"
   package "curl-devel"
@@ -41,6 +51,6 @@ gem_package "passenger" do
 end
 
 execute "passenger_module" do
-  command 'echo -en "\n\n\n\n" | passenger-install-apache2-module'
+  command %Q(CC=#{passenger_cc} echo -en "\n\n\n\n" | passenger-install-apache2-module)
   creates node[:passenger][:module_path]
 end

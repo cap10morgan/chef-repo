@@ -26,6 +26,16 @@
 include_recipe "passenger_enterprise"
 include_recipe "apache2"
 
+passenger_cc = value_for_platform(
+  ["ubuntu"] => {
+    "11.10"   => "gcc-4.4",
+    "default" => "gcc"
+  },
+  "default" => "gcc"
+)
+
+package passenger_cc
+
 %w{ apache2-threaded-dev libapr1-dev libaprutil1-dev }.each do |pkg|
   package pkg do
     action :install
@@ -33,7 +43,7 @@ include_recipe "apache2"
 end
 
 execute "passenger_apache2_module" do
-  command "#{node[:ruby_enterprise][:install_path]}/bin/passenger-install-apache2-module -a"
+  command %Q(CC=#{passenger_cc} #{node[:ruby_enterprise][:install_path]}/bin/passenger-install-apache2-module -a)
   creates node[:passenger_enterprise][:module_path]
 end
 
