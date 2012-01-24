@@ -37,7 +37,7 @@ template "/etc/apache2/sites-available/turbovote.conf" do
   owner  "root"
   group  "root"
   mode   "0644"
-  variables :doc_root => "#{node['turbovote']['app_root']}/current/public"
+  variables :doc_root => "#{node['turbovote']['app_root']}/current/public", :server_aliases => node['turbovote']['server_aliases']
 end
 
 apache_module "ssl"

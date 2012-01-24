@@ -1,8 +1,8 @@
 # Created by Chef
 
 <VirtualHost *:80>
-  ServerName turbovote.com
-  ServerAlias www.turbovote.com
+  ServerName turbovote.org
+  ServerAlias www.turbovote.org <%= @server_aliases.join(" ") %>
 
   DocumentRoot <%= @doc_root %>
 
@@ -26,11 +26,14 @@
 
   CustomLog /var/log/apache2/access.log combined
 
+  RewriteEngine on
+  RewriteCond %{HTTP_HOST}                ^www\.turbovote\.org$ [NC]
+  RewriteRule ^/(.*)                      http://turbovote.org/$1 [L,R]
 </VirtualHost>
 
 <VirtualHost _default_:443>
-  ServerName turbovote.com
-  ServerAlias www.turbovote.com
+  ServerName turbovote.org
+  ServerAlias www.turbovote.org <%= @server_aliases.join(" ") %>
 
   DocumentRoot <%= @doc_root %>
 
@@ -54,8 +57,11 @@
 
   CustomLog /var/log/apache2/access.log combined
 
-  SSLEngine on
+  RewriteEngine on
+  RewriteCond %{HTTP_HOST}                ^www\.turbovote\.org$ [NC]
+  RewriteRule ^/(.*)                      https://turbovote.org/$1 [L,R]
 
+  SSLEngine on
   SSLCertificateFile /etc/ssl/certs/turbovote.org.crt
   SSLCertificateKeyFile /etc/ssl/private/turbovote.org.key
   SSLCertificateChainFile /etc/ssl/certs/turbovote.org.chain.crt
