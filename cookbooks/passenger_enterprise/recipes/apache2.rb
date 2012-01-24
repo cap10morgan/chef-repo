@@ -43,7 +43,8 @@ package passenger_cc
 end
 
 execute "passenger_apache2_module" do
-  command %Q(CC=#{passenger_cc} #{node[:ruby_enterprise][:install_path]}/bin/passenger-install-apache2-module -a)
+  environment ({ 'CC' => passenger_cc })
+  command "#{node[:ruby_enterprise][:install_path]}/bin/passenger-install-apache2-module -a"
   creates node[:passenger_enterprise][:module_path]
 end
 

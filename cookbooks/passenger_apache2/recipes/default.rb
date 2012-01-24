@@ -51,6 +51,7 @@ gem_package "passenger" do
 end
 
 execute "passenger_module" do
-  command %Q(CC=#{passenger_cc} echo -en "\n\n\n\n" | passenger-install-apache2-module)
+  environment ({ 'CC' => passenger_cc })
+  command "passenger-install-apache2-module -a"
   creates node[:passenger][:module_path]
 end

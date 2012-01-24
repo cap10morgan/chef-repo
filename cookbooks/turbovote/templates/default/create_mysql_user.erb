@@ -1,3 +1,3 @@
 GRANT ALL ON `<%= node['turbovote']['database_name'] %>`.*
-TO `<%= @user %>`@localhost
+TO `<%= @user %>`@`%`
 IDENTIFIED BY '<%= @password %>'

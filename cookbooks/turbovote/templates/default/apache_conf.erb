@@ -6,8 +6,9 @@
 
   DocumentRoot <%= @doc_root %>
 
-  RailsEnv production
+  RailsEnv <%= @rails_env %>
   PassengerSpawnMethod conservative
+  PassengerMaxPoolSize <%= @passenger_max_pool_size %>
 
   <Directory />
     Options FollowSymLinks
@@ -37,8 +38,9 @@
 
   DocumentRoot <%= @doc_root %>
 
-  RailsEnv production
+  RailsEnv <%= @rails_env %>
   PassengerSpawnMethod conservative
+  PassengerMaxPoolSize <%= @passenger_max_pool_size %>
 
   <Directory />
     Options FollowSymLinks
