@@ -11,6 +11,7 @@ end
 user node['turbovote']['user'] do
   action :create
   home node[:turbovote][:app_root]
+  shell "/bin/bash"
   system true
 end
 
